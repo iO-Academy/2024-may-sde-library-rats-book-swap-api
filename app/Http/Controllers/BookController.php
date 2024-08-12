@@ -12,12 +12,23 @@ class BookController extends Controller
     public Book $book;
     public Genre $genre;
 
-    public function __construct(Book $book)
+    public function __construct(Book $book, Genre $genre)
     {
         $this->book = $book;
+        $this->genre = $genre;
     }
     public function getAllBooks(Request $request)
     {
+        $genreId = $request->genre;
+        $genre = $this->genre->find($genreId);
+
+        if (!$genre) {
+            return response()->json([
+                'message' => 'Genre failed successfully',
+                'success'=> false
+            ], 404);
+        }
+
         $booksQuery = $this->book->query();
 
         if (isset($request->genre)) {
