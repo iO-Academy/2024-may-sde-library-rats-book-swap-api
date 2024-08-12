@@ -8,5 +8,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/books', [\App\Http\Controllers\BookController::class, 'getAllBooks']);
-
-//Route::put('/api/books/claim/{id}', [\App\Http\Controllers\BookController::class, 'claimBook']);
+Route::get('/books/{id}', [\App\Http\Controllers\BookController::class, 'getBookById']);

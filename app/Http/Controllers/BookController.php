@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -33,19 +34,24 @@ class BookController extends Controller
         ]);
     }
 
-//    public function claimBook(int $id, Request $request)
-//    {
-//        $book = Book::find($id);
-//        $request->validate([
-//            'name'=>'required | string',
-//            'email'=>'required | email'
-//        ]);
-//
-//        if(!$id){
-//            return response()->json([
-//                'message'=> 'Book {id} not found',
-//                'success'=> false,
-//            ]);
-//        }
-//    }
+    public function getBookById(int $id) {
+
+        $book = $this->book->find($id);
+
+        if (!$book){
+            return response()->json([
+                'message' => "Book with ID {$id} not found",
+                'success' => false
+            ], 404);
+        }
+
+        $book->genre;
+        $book->reviews;
+
+        return response()->json([
+            'message' => 'book retrieved',
+            'success' => true,
+            'data' => $book
+        ]);
+    }
 }
