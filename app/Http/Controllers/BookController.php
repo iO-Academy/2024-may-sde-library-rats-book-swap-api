@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -24,8 +25,12 @@ public function __construct(Book $book)
                 'success' => false
             ], 404);
         }
+
+        $book->genre;
+        $book->reviews;
+
         return response()->json([
-            'message' => 'book retrived',
+            'message' => 'book retrieved',
             'success' => true,
             'data' => $book
         ]);
