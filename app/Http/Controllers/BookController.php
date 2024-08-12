@@ -20,11 +20,15 @@ public function __construct(Book $book)
 
         if (!$book){
             return response()->json([
-                'message' => 'Booknotfound'
-
-            ])
+                'message' => 'Book not found',
+                'success' => false
+            ], 404);
         }
-        return $book;
+        return response()->json([
+            'message' => 'book retrived',
+            'success' => true,
+            'data' => $book
+        ]);
 
     }
 }

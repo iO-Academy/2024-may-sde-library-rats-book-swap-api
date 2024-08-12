@@ -7,4 +7,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('books/{id}', [\App\Http\Controllers\BookController::class, 'getBookById']);
+Route::get('/books/{id}', [\App\Http\Controllers\BookController::class, 'getBookById']);
