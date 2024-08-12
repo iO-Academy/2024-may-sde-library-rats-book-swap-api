@@ -10,14 +10,21 @@ class BookController extends Controller
 {
 
     public Book $book;
+    public Genre $genre;
 
     public function __construct(Book $book)
     {
         $this->book = $book;
     }
-    public function getAllBooks()
+    public function getAllBooks(Request $request)
     {
-        $books = $this->book->with('genre')->get()->makeHidden([
+        $booksQuery = $this->book->query();
+
+        if (isset($request->genre)) {
+            $booksQuery = $booksQuery->where('genre_id', '=', $request->genre);
+        }
+
+        $books = $booksQuery->with('genre')->get()->makeHidden([
             'blurb',
             'claimed_by_name',
             'page_count',
