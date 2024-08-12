@@ -21,7 +21,7 @@ public function __construct(Book $book)
 
         if (!$book){
             return response()->json([
-                'message' => 'Book not found',
+                'message' => "Book with ID {$id} not found",
                 'success' => false
             ], 404);
         }
@@ -34,6 +34,5 @@ public function __construct(Book $book)
             'success' => true,
             'data' => $book
         ]);
-
     }
 }
