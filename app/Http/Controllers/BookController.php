@@ -14,18 +14,15 @@ class BookController extends Controller
     {
         $this->book = $book;
     }
-
-
     public function getAllBooks()
     {
-    $books = $this->book->with('genre')->get()->makeHidden(['blurb', 'claimed_by_name', 'page_count', 'claimed', 'user_id', 'created_at', 'updated_at']);
+        $books = $this->book->with('genre')->get()->makeHidden(['blurb', 'claimed_by_name', 'page_count', 'claimed', 'user_id', 'created_at', 'updated_at'])
 
-
-    return response()->json([
-        'message' => 'Books successfully retrieved',
-        'success'=> true,
-        'data' => $books
-    ]);
+        return response()->json([
+            'message' => 'Books successfully retrieved',
+            'success'=> true,
+            'data' => $books
+        ]);
     }
 
 //    public function claimBook(int $id, Request $request)
