@@ -16,7 +16,15 @@ class BookController extends Controller
     }
     public function getAllBooks()
     {
-        $books = $this->book->with('genre')->get()->makeHidden(['blurb', 'claimed_by_name', 'page_count', 'claimed', 'user_id', 'created_at', 'updated_at'])
+        $books = $this->book->with('genre')->get()->makeHidden([
+            'blurb',
+            'claimed_by_name',
+            'page_count',
+            'claimed',
+            'user_id',
+            'created_at',
+            'updated_at'
+        ]);
 
         return response()->json([
             'message' => 'Books successfully retrieved',
