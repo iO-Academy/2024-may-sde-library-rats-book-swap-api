@@ -28,19 +28,19 @@ class BookController extends Controller
     ]);
     }
 
-    public function claimBook(int $id, Request $request)
-    {
-        $book = Book::find($id);
-        $request->validate([
-            'name'=>'required | string',
-            'email'=>'required | email'
-        ]);
-
-        if(!$id){
-            return response()->json([
-                'message'=> 'Book {id} not found',
-                'success'=> false,
-            ]);
-        }
-    }
+//    public function claimBook(int $id, Request $request)
+//    {
+//        $book = Book::find($id);
+//        $request->validate([
+//            'name'=>'required | string',
+//            'email'=>'required | email'
+//        ]);
+//
+//        if(!$id){
+//            return response()->json([
+//                'message'=> 'Book {id} not found',
+//                'success'=> false,
+//            ]);
+//        }
+//    }
 }
