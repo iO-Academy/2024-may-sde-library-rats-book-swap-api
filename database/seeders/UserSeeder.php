@@ -15,11 +15,13 @@ class UserSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
 
-
-            DB::table('books')->insert([
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('users')->insert([
                 'name' => $faker->name(),
                 'email' => $faker->email(),
+                'password' => null
             ]);
+        }
     }
 
 }

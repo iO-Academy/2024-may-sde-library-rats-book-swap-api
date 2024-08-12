@@ -15,11 +15,12 @@ class BookSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
 
+        for ($i = 0; $i < 10; $i++) {
             DB::table('books')->insert([
-                'title' => $faker->words(2),
+                'title' => $faker->word(),
                 'author' => $faker->name(),
                 'year' => $faker->year(),
-                'blurb' => $faker->sentence(50),
+                'blurb' => $faker->sentence(),
                 'image' => $faker->imageUrl(),
                 'claimed_by_name' => null,
                 'page_count' => rand(100, 1000),
@@ -27,5 +28,6 @@ class BookSeeder extends Seeder
                 'genre_id' => rand(1, 4),
                 'user_id' => null
             ]);
+        }
     }
 }
