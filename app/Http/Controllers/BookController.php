@@ -22,13 +22,6 @@ class BookController extends Controller
         $genreId = $request->genre;
         $genre = $this->genre->find($genreId);
 
-        if (!$genre) {
-            return response()->json([
-                'message' => 'Genre failed successfully',
-                'success'=> false
-            ], 404);
-        }
-
         $booksQuery = $this->book->query();
 
         if (isset($request->genre)) {
@@ -37,7 +30,7 @@ class BookController extends Controller
 
         $books = $booksQuery->with('genre')->get()->makeHidden([
             'blurb',
-            'claimed_by_name',
+            'name',
             'page_count',
             'claimed',
             'user_id',
