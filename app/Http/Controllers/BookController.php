@@ -24,7 +24,14 @@ class BookController extends Controller
 
         $booksQuery = $this->book->query();
 
+
         if (isset($request->genre)) {
+            if (!$genre) {
+                return response()->json([
+                    'message' => 'Genre failed successfully',
+                    'success'=> false
+                ], 404);
+            }
             $booksQuery = $booksQuery->where('genre_id', '=', $request->genre);
         }
 
@@ -43,6 +50,7 @@ class BookController extends Controller
             'success'=> true,
             'data' => $books
         ]);
+
     }
 
     public function getBookById(int $id) {
