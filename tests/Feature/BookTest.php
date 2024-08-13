@@ -48,8 +48,39 @@ class BookTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $json) {
-                $json->hasAll(['message', 'success', 'data']);
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', function (AssertableJson $json) {
+                        $json->hasAll([
+                            'id',
+                            'title',
+                            'author',
+                            'image',
+                            'year',
+                            'blurb',
+                            'page_count',
+                            'claimed',
+                            'claimed_by_name',
+                            'genre_id',
+                            'user_id',
+                            'claimed_by_email',
+                            'genre',
+                            'reviews',
+                            'created_at',
+                            'updated_at'
+                        ]);
+                    });
             });
+    }
 
+    public function test_getBookByID_failure(): void
+    {
+        Book::factory()->create();
+
+        $response = $this->get('/api/books/3');
+
+        $response->assertStatus(404)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
     }
 }
