@@ -83,8 +83,7 @@ class BookController extends Controller
         $book->save();
         return response()->json([
             'message'=> "Book {$id} was claimed",
-            'success'=> true,
-            'data'=> $book
+            'success'=> true
         ]);
     }
 
@@ -123,8 +122,7 @@ class BookController extends Controller
         $book->save();
         return response()->json([
             'message'=> "Book {$id} was returned",
-            'success'=> true,
-            'data'=> $book
+            'success'=> true
         ]);
     }
 }
