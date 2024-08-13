@@ -20,20 +20,6 @@ class BookTest extends TestCase
     {
         Book::factory()->create();
 
-//        $testData = [
-//            'title' => 'the title',
-//            'author' => 'author name',
-//            'year' => 1992,
-//            'blurb' => 'awesome blurb',
-//            'image' => 'https://via.placeholder.com/640x480.png/0099dd?text=modi',
-//            'claimed_by_name' => 'name',
-//            'page_count' => '234',
-//            'claimed' => 0,
-//            'genre_id' => 1,
-//            'user_id' => 1,
-//            'claimed_by_email' => 'test@test.com'
-//            ];
-
             $testData = [
                 'email' => 'test@test.com'
             ];
@@ -46,5 +32,59 @@ class BookTest extends TestCase
             });
 
         $this->assertDatabaseHas('books', ['id' => 1, 'claimed' => 0, 'claimed_by_email' => null]);
+    }
+
+    public function test_returnBook_failureWrongEmail(): void
+    {
+        Book::factory()->create();
+
+        $testData = [
+            'email' => 'te@test.com'
+        ];
+
+        $response = $this->putJson('/api/books/return/1', $testData);
+
+        $response->assertStatus(400)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll('message', 'success');
+            });
+
+        $this->assertDatabaseHas('books', ['id' => 1, 'claimed' => 1, 'claimed_by_email' => 'test@test.com']);
+    }
+
+    public function test_returnBook_failureNotAlreadyClaimed(): void
+    {
+        Book::factory()->create();
+
+        $testData = [
+            'email' => 'test@test.com'
+        ];
+
+        $response = $this->putJson('/api/books/return/2', $testData);
+
+        $response->assertStatus(404)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll('message', 'success');
+            });
+
+        $this->assertDatabaseMissing('books', ['id' => 2]);
+    }
+
+    public function test_returnBook_failureBookIdNotFound(): void
+    {
+        Book::factory()->create(['claimed' => 0]);
+
+        $testData = [
+            'email' => 'test@test.com'
+        ];
+
+        $response = $this->putJson('/api/books/return/1', $testData);
+
+        $response->assertStatus(400)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll('message', 'success');
+            });
+
+        $this->assertDatabaseHas('books', ['id' => 1, 'claimed' => 0, 'claimed_by_email' => 'test@test.com']);
     }
 }
