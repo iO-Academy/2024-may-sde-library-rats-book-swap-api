@@ -20,7 +20,10 @@ class GenreTest extends TestCase
         $response = $this->getJson('api/genres');
         $response->assertStatus(200)
         ->assertJson(function(AssertableJson $json){
-            $json->hasAll(['message', 'success', 'data']);
+            $json->hasAll(['message', 'success', 'data'])
+            ->has('data', 1, function (AssertableJson $json) {
+                $json->hasAll(['name', 'id', 'created_at', 'updated_at']);
+            });
         });
 
     }
