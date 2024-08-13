@@ -13,7 +13,6 @@ class GenreController extends Controller
     {
         $this->genre = $genre;
     }
-
     public function getAllGenres()
     {
         $genres = $this->genre->get();

@@ -13,7 +13,6 @@ class GenreTest extends TestCase
 {
     use DatabaseMigrations;
 
-
     public function test_getAllGenres_success(): void
     {
         Genre::factory()->create();
