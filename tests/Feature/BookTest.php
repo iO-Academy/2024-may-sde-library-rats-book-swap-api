@@ -18,7 +18,7 @@ class BookTest extends TestCase
      */
     public function test_returnBook_success(): void
     {
-        Book::factory()->create();
+        Book::factory()->create(['claimed_by_email' =>'test@test.com', 'claimed'=> 1]);
 
             $testData = [
                 'email' => 'test@test.com'
@@ -36,7 +36,7 @@ class BookTest extends TestCase
 
     public function test_returnBook_failureWrongEmail(): void
     {
-        Book::factory()->create();
+        Book::factory()->create(['claimed_by_email'=> 'test@test.com', 'claimed'=>1]);
 
         $testData = [
             'email' => 'te@test.com'
@@ -52,9 +52,9 @@ class BookTest extends TestCase
         $this->assertDatabaseHas('books', ['id' => 1, 'claimed' => 1, 'claimed_by_email' => 'test@test.com']);
     }
 
-    public function test_returnBook_failureNotAlreadyClaimed(): void
+    public function test_returnBook_failureBookIdNotFound(): void
     {
-        Book::factory()->create();
+        Book::factory()->create(['claimed_by_email'=> 'test@test.com', 'claimed'=>1]);
 
         $testData = [
             'email' => 'test@test.com'
@@ -70,9 +70,9 @@ class BookTest extends TestCase
         $this->assertDatabaseMissing('books', ['id' => 2]);
     }
 
-    public function test_returnBook_failureBookIdNotFound(): void
+    public function test_returnBook_failureNotAlreadyClaimed(): void
     {
-        Book::factory()->create(['claimed' => 0]);
+        Book::factory()->create(['claimed_by_email'=>'test@test.com','claimed' => 0]);
 
         $testData = [
             'email' => 'test@test.com'
