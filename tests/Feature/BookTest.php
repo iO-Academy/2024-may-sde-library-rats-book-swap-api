@@ -249,4 +249,38 @@ class BookTest extends TestCase
                     });
             });
     }
+
+    public function test_addBook_success(): void
+    {
+        $testData = [
+            'title' => 'A boooooook',
+            'author' => 'An author',
+            'genre_id' => 1
+        ];
+
+        $response = $this->postJson('/api/books', $testData);
+
+        $response->assertStatus(201)
+        ->assertJson(function (AssertableJson $json){
+            $json->hasAll(['message', 'success']);
+        });
+
+        $this->assertDatabaseHas('books', $testData );
+    }
+
+    public function test_addBook_failure(): void
+    {
+        $testData = [
+            'title' => 'A boooooook'
+        ];
+
+        $response = $this->postJson('/api/books', $testData);
+
+        $response->assertStatus(422)
+        ->assertJson(function(AssertableJson $json) {
+            $json->hasAll(['message', 'success']);
+        });
+
+        $this->assertDatabaseMissing('books', $testData );
+    }
 }

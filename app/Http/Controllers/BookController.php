@@ -166,9 +166,13 @@ class BookController extends Controller
         $book->blurb = $request->blurb;
         $book->image = $request->image;
         $book->page_count = $request->page_count;
-        $book->claimed = $request->claimed;
+        $book->claimed = 0;
         $book->genre_id = $request->genre_id;
 
+        if (!$book->title || $book->author || $book->genre_id)
+        {
+            return->
+        }
 
         if ($book->save())
 
@@ -183,9 +187,6 @@ class BookController extends Controller
             'message' => 'book failured',
             'success' => false
         ], 500);
-
-
-        return response('Well job its not done gone added');
 
     }
 }
