@@ -110,9 +110,7 @@ class BookController extends Controller
             ], 400);
         }
 
-        $exists = $book->where('claimed_by_email', '=', $request->email)->exists();
-
-        if (!$exists){
+        if ($book->claimed_by_email !== $request->email){
             return response()->json([
                 'message'=> "Book {$id} was not returned. {$request->email} did not claim this book.",
                 'success'=>false
