@@ -19,11 +19,13 @@ class BookController extends Controller
     }
     public function getAllBooks(Request $request)
     {
+        $request->validate([
+           'genre_id' => 'exists:genres,id'
+        ]);
+
         $genreId = $request->genre;
         $genre = $this->genre->find($genreId);
-
         $booksQuery = $this->book->query();
-
 
         if (isset($request->genre)) {
             if (!$genre) {

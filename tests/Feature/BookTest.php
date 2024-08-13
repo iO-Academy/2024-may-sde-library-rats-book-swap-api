@@ -221,4 +221,32 @@ class BookTest extends TestCase
             'claimed_by_name'=> 'test',
             'claimed_by_email' => 'test@test.com']);
     }
+
+    public function test_getBookGenre_success(): void
+    {
+        Book::factory()->create();
+
+        $response = $this->getJson('api/books?genre=1');
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', 1, function (AssertableJson $json) {
+                        $json->hasAll([
+                            'id',
+                            'title',
+                            'author',
+                            'image',
+                            'year',
+                            'claimed_by_name',
+                            'genre_id',
+                            'claimed_by_email',
+                            'genre'
+                        ])
+                        ->where(
+                            'genre_id', 1
+                        );
+                    });
+            });
+    }
 }
