@@ -83,7 +83,7 @@ class BookController extends Controller
         }
         if ($book->claimed == 1){
             return response()->json([
-                'message'=> "Book {id} is already claimed",
+                'message'=> "Book {$id} is already claimed",
                 'success'=>false
             ], 400);
         }
@@ -94,6 +94,48 @@ class BookController extends Controller
         $book->save();
         return response()->json([
             'message'=> "Book {$id} was claimed",
+            'success'=> true,
+            'data'=> $book
+        ]);
+    }
+
+    public function returnBook(int $id, Request $request)
+    {
+        $request->validate([
+            'email'=>'required | string'
+        ]);
+
+        $book = $this->book->find($id);
+
+        if(!$book){
+            return response()->json([
+                'message'=> "Book {$id} not found",
+                'success'=> false
+            ],404);
+        }
+
+        if ($book->claimed == 0){
+            return response()->json([
+                'message'=> "Book {$id} is not claimed",
+                'success'=>false
+            ], 400);
+        }
+
+        $exists = $book->where('claimed_by_email', '=', $request->email)->exists();
+
+        if (!$exists){
+            return response()->json([
+                'message'=> "Book {$id} was not returned. {$request->email} did not claim this book.",
+                'success'=>false
+            ], 400);
+        }
+
+        $book->claimed_by_name = null;
+        $book->claimed_by_email = null;
+        $book->claimed = 0;
+        $book->save();
+        return response()->json([
+            'message'=> "Book {$id} was returned",
             'success'=> true,
             'data'=> $book
         ]);

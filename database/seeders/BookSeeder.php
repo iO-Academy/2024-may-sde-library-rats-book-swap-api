@@ -23,6 +23,7 @@ class BookSeeder extends Seeder
                 'blurb' => $faker->sentence(),
                 'image' => $faker->imageUrl(),
                 'claimed_by_name' => null,
+                'claimed_by_email' => null,
                 'page_count' => rand(100, 1000),
                 'claimed' => 0,
                 'genre_id' => rand(1, 4),
