@@ -14,9 +14,10 @@ class GenreSeeder extends Seeder
     public function run(): void
     {
         $faker = \Faker\Factory::create();
-
-        DB::table('books')->insert([
-            'name' => $faker->word(),
-        ]);
+        for ($i = 0; $i < 4; $i++) {
+            DB::table('genres')->insert([
+                'name' => $faker->word(),
+            ]);
+        }
     }
 }
