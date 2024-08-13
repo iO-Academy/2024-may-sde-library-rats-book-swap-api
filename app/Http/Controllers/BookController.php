@@ -10,16 +10,36 @@ class BookController extends Controller
 {
 
     public Book $book;
+    public Genre $genre;
 
-    public function __construct(Book $book)
+    public function __construct(Book $book, Genre $genre)
     {
         $this->book = $book;
+        $this->genre = $genre;
     }
-    public function getAllBooks()
+    public function getAllBooks(Request $request)
     {
-        $books = $this->book->with('genre')->get()->makeHidden([
+        $request->validate([
+           'genre_id' => 'exists:genres,id'
+        ]);
+
+        $genreId = $request->genre;
+        $genre = $this->genre->find($genreId);
+        $booksQuery = $this->book->query();
+
+        if (isset($request->genre)) {
+            if (!$genre) {
+                return response()->json([
+                    'message' => 'Genre failed successfully',
+                    'success'=> false
+                ], 404);
+            }
+            $booksQuery = $booksQuery->where('genre_id', '=', $request->genre);
+        }
+
+        $books = $booksQuery->with('genre')->get()->makeHidden([
             'blurb',
-            'claimed_by_name',
+            'name',
             'page_count',
             'claimed',
             'user_id',
@@ -32,6 +52,7 @@ class BookController extends Controller
             'success'=> true,
             'data' => $books
         ]);
+
     }
 
     public function getBookById(int $id) {
