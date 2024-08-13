@@ -58,8 +58,8 @@ class BookController extends Controller
     public function claimBook(int $id, Request $request)
     {
         $request->validate([
-            'claimed_by_name'=>'required | string',
-            'claimed_by_email'=>'required | string'
+            'name'=>'required | string',
+            'email'=>'required | string'
         ]);
 
         $book = $this->book->find($id);
@@ -77,8 +77,8 @@ class BookController extends Controller
             ], 400);
         }
 
-        $book->claimed_by_name = $request->claimed_by_name;
-        $book->claimed_by_email = $request->claimed_by_email;
+        $book->name = $request->name;
+        $book->email = $request->email;
         $book->claimed = 1;
         $book->save();
         return response()->json([
