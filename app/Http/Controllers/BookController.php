@@ -77,8 +77,8 @@ class BookController extends Controller
             ], 400);
         }
 
-        $book->name = $request->name;
-        $book->email = $request->email;
+        $book->claimed_by_name = $request->name;
+        $book->claimed_by_email = $request->email;
         $book->claimed = 1;
         $book->save();
         return response()->json([
@@ -86,7 +86,5 @@ class BookController extends Controller
             'success'=> true,
             'data'=> $book
         ]);
-
-
     }
 }
