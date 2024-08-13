@@ -28,24 +28,28 @@ class BookTest extends TestCase
                             'id',
                             'title',
                             'author',
-                            'image'
-                        ])
-                            ->has('genre');
+                            'image',
+                            'year',
+                            'claimed_by_name',
+                            'genre_id',
+                            'claimed_by_email',
+                            'genre'
+                        ]);
                     });
             });
     }
 
-//    public function test_getBookById_success(): void
-//    {
-//
-//        Book::factory()->create();
-//
-//        $response = $this->get('/api/book/1');
-//
-//        $response->assertStatus(200)
-//            ->assertJson(function (AssertableJson $json) {
-//                $json->hasAll(['message', 'data', 'success']);
-//            });
-//
-//    }
+    public function test_getBookById_success(): void
+    {
+
+        Book::factory()->create();
+
+        $response = $this->get('/api/books/1');
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data']);
+            });
+
+    }
 }
