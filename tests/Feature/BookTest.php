@@ -17,7 +17,7 @@ class BookTest extends TestCase
 
     public function test_getAllBooks_success(): void
     {
-        Book::factory()->create();
+        Book::factory()->create(['claimed' => 0]);
 
         $response = $this->getJson('api/books');
 
@@ -87,7 +87,7 @@ class BookTest extends TestCase
 
     public function test_returnBook_success(): void
     {
-        Book::factory()->create(['claimed_by_email' =>'test@test.com', 'claimed'=> 1]);
+        Book::factory()->create(['claimed_by_email' => 'test@test.com', 'claimed' => 1]);
 
             $testData = [
                 'email' => 'test@test.com'
@@ -105,7 +105,7 @@ class BookTest extends TestCase
 
     public function test_returnBook_failure_WrongEmail(): void
     {
-        Book::factory()->create(['claimed_by_email'=> 'test@test.com', 'claimed'=>1]);
+        Book::factory()->create(['claimed_by_email' => 'test@test.com', 'claimed' => 1]);
 
         $testData = [
             'email' => 'te@test.com'
@@ -123,7 +123,7 @@ class BookTest extends TestCase
 
     public function test_returnBook_failure_BookIdNotFound(): void
     {
-        Book::factory()->create(['claimed_by_email'=> 'test@test.com', 'claimed'=>1]);
+        Book::factory()->create(['claimed_by_email' => 'test@test.com', 'claimed' => 1]);
 
         $testData = [
             'email' => 'test@test.com'
@@ -141,7 +141,7 @@ class BookTest extends TestCase
 
     public function test_returnBook_failure_NotAlreadyClaimed(): void
     {
-        Book::factory()->create(['claimed_by_email'=>'test@test.com','claimed' => 0]);
+        Book::factory()->create(['claimed_by_email' => 'test@test.com','claimed' => 0]);
 
         $testData = [
             'email' => 'test@test.com'
@@ -159,11 +159,11 @@ class BookTest extends TestCase
 
     public function test_claimBook_success(): void
     {
-        Book::factory()->create(['claimed'=>0]);
+        Book::factory()->create(['claimed' => 0]);
 
         $testData = ([
-           'name'=>'test',
-           'email'=>'test@test.com'
+           'name' => 'test',
+           'email' => 'test@test.com'
         ]);
 
         $response = $this->putJson('/api/books/claim/1', $testData);
@@ -176,17 +176,17 @@ class BookTest extends TestCase
         $this->assertDatabaseHas('books', ['id' => 1,
             'claimed' => 1,
             'claimed_by_email' => 'test@test.com',
-            'claimed_by_name'=> 'test'
+            'claimed_by_name' => 'test'
         ]);
 
     }
 
     public function test_claimBook_failure_BookIdNotFound(): void
     {
-        Book::factory()->create(['claimed'=>0]);
+        Book::factory()->create(['claimed' => 0]);
 
         $testData = [
-            'name'=> 'test',
+            'name' => 'test',
             'email' => 'test@test.com'
         ];
 
@@ -202,10 +202,10 @@ class BookTest extends TestCase
 
     public function test_claimBook_failure_BookAlreadyClaimed(): void
     {
-        Book::factory()->create(['claimed_by_name'=>'test','claimed_by_email'=>'test@test.com','claimed' => 1]);
+        Book::factory()->create(['claimed_by_name' => 'test','claimed_by_email' => 'test@test.com','claimed' => 1]);
 
         $testData = [
-            'name'=> 'test',
+            'name' => 'test',
             'email' => 'test@test.com'
         ];
 
@@ -218,13 +218,13 @@ class BookTest extends TestCase
 
         $this->assertDatabaseHas('books', ['id' => 1,
             'claimed' => 1,
-            'claimed_by_name'=> 'test',
+            'claimed_by_name' => 'test',
             'claimed_by_email' => 'test@test.com']);
     }
 
     public function test_getBookGenre_success(): void
     {
-        Book::factory()->create();
+        Book::factory()->create(['claimed' => 0]);
 
         $response = $this->getJson('api/books?genre=1');
 
@@ -246,6 +246,32 @@ class BookTest extends TestCase
                         ->where(
                             'genre_id', 1
                         );
+                    });
+            });
+    }
+
+    public function test_getClaimedBooks_success(): void
+    {
+        Book::factory()->create(['claimed' => 1]);
+        Book::factory()->create(['claimed' => 0]);
+
+        $response = $this->getJson('api/books?claimed=1');
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', 1, function (AssertableJson $json) {
+                        $json->hasAll([
+                            'id',
+                            'title',
+                            'author',
+                            'image',
+                            'year',
+                            'claimed_by_name',
+                            'genre_id',
+                            'claimed_by_email',
+                            'genre'
+                        ]);
                     });
             });
     }

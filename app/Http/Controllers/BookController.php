@@ -37,6 +37,13 @@ class BookController extends Controller
             $booksQuery = $booksQuery->where('genre_id', '=', $request->genre);
         }
 
+        if (isset($request->claimed)){
+            $booksQuery = $booksQuery->where('claimed', '=', $request->claimed);
+        }
+        else {
+            $booksQuery = $booksQuery->where('claimed', '=', 0);
+        }
+
         $books = $booksQuery->with('genre')->get()->makeHidden([
             'blurb',
             'name',
@@ -54,7 +61,6 @@ class BookController extends Controller
         ]);
 
     }
-
     public function getBookById(int $id) {
 
         $book = $this->book->find($id);
