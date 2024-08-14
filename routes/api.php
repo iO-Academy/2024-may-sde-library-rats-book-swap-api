@@ -12,3 +12,4 @@ Route::get('/books/{id}', [\App\Http\Controllers\BookController::class, 'getBook
 Route::put('/books/claim/{id}', [\App\Http\Controllers\BookController::class, 'claimBook']);
 Route::put('/books/return/{id}', [\App\Http\Controllers\BookController::class, 'returnBook']);
 Route::get('/genres', [\App\Http\Controllers\GenreController::class, 'getAllGenres']);
+Route::post('/books', [\App\Http\Controllers\BookController::class,'addBook']);

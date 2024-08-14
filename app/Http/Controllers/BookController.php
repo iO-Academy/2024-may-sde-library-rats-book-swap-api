@@ -152,4 +152,39 @@ class BookController extends Controller
             'success' => true
         ]);
     }
+    public function addBook(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'year' => 'integer',
+            'blurb' => 'string|max:255',
+            'image' => 'string|max:255',
+            'page_count' => 'integer',
+            'claimed' => 'boolean',
+            'genre_id' => 'required|integer|exists:genres,id',
+        ]);
+
+        $book = new book();
+        $book->title = $request->title;
+        $book->author = $request->author;
+        $book->year = $request->year;
+        $book->blurb = $request->blurb;
+        $book->image = $request->image;
+        $book->page_count = $request->page_count;
+        $book->claimed = 0;
+        $book->genre_id = $request->genre_id;
+
+        if ($book->save()) {
+            return response()->json([
+                'message' => 'booked created',
+                'success' => true
+            ], 201);
+        }
+
+        return response()->json([
+            'message' => 'book failured',
+            'success' => false
+        ], 500);
+    }
 }
