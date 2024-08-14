@@ -379,4 +379,47 @@ class BookTest extends TestCase
             });
 
     }
+
+    public function test_getBookSearch_success(): void
+    {
+        Book::factory()->create(['title'=> 'testybook title','claimed' => 0]);
+        Book::factory()->create(['author'=> 'testerson','claimed' => 0]);
+        Book::factory()->create(['blurb'=> 'testybook','claimed' => 0]);
+        Book::factory()->create(['claimed' => 0]);
+
+        $response = $this->getJson('api/books?search=test');
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', 3, function (AssertableJson $json) {
+                        $json->hasAll([
+                            'id',
+                            'title',
+                            'author',
+                            'image',
+                            'year',
+                            'claimed_by_name',
+                            'genre_id',
+                            'claimed_by_email',
+                            'genre'
+                        ]);
+                    });
+            });
+    }
+
+    public function test_getBookSearch_failure(): void
+    {
+        Book::factory()->create(['title'=> 'title','claimed' => 0]);
+
+        $response = $this->getJson('api/books?search=test');
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', function (AssertableJson $json){
+                        $json->hasAll([]);
+                    });
+            });
+    }
 }
