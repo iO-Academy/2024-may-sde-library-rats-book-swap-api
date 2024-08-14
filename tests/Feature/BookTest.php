@@ -385,7 +385,7 @@ class BookTest extends TestCase
         Book::factory()->create(['title' => 'testybook title', 'author' => 'author', 'blurb' => 'blurb', 'claimed' => 0]);
         Book::factory()->create(['title' => 'title', 'author' => 'testerson', 'blurb' => 'blurb', 'claimed' => 0]);
         Book::factory()->create(['title' => 'title', 'author' => 'author', 'blurb' => 'testybook', 'claimed' => 0]);
-        Book::factory()->create(['claimed' => 0]);
+        Book::factory()->create(['title' => 'title', 'author' => 'author', 'blurb' => 'blurb', 'claimed' => 0]);
 
         $response = $this->getJson('api/books?search=test');
 
