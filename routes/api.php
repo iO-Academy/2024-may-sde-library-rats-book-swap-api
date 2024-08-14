@@ -7,6 +7,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Refactor to use controller route groups
 Route::get('/books', [\App\Http\Controllers\BookController::class, 'getAllBooks']);
 Route::get('/books/{id}', [\App\Http\Controllers\BookController::class, 'getBookById']);
 Route::put('/books/claim/{id}', [\App\Http\Controllers\BookController::class, 'claimBook']);

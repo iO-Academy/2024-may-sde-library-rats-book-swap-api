@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Genre;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-
+    // Get rid of this blank line
     public Book $book;
     public Genre $genre;
 
@@ -17,7 +18,9 @@ class BookController extends Controller
         $this->book = $book;
         $this->genre = $genre;
     }
-    public function getAllBooks(Request $request)
+
+    // Add JsonResponse return type hints to all controller methods
+    public function getAllBooks(Request $request): JsonResponse
     {
         $request->validate([
             'search' => 'string',
@@ -26,11 +29,13 @@ class BookController extends Controller
 
         $booksQuery = $this->book->query();
 
+        // indentation?
         if ($request->search) {
                 $booksQuery = $booksQuery->whereAny(['title', 'author', 'blurb'], 'LIKE', "%{$request->search}%");
             }
 
         if ($request->genre) {
+            // i think you can skip passing in =, it's the default
             $booksQuery = $booksQuery->where('genre_id', '=', $request->genre);
         }
 
@@ -41,6 +46,7 @@ class BookController extends Controller
             $booksQuery = $booksQuery->where('claimed', '=', 0);
         }
 
+        // Add the timestamps to the hidden property of your book model
         $books = $booksQuery->with('genre')->get()->makeHidden([
             'blurb',
             'name',
@@ -69,6 +75,7 @@ class BookController extends Controller
             ], 404);
         }
 
+        // Switch this to using with instead - it's more efficient
         $book->genre;
         $book->reviews;
 
@@ -81,6 +88,7 @@ class BookController extends Controller
 
     public function claimBook(int $id, Request $request)
     {
+        // Be consistent with spaces around |
         $request->validate([
             'name' => 'required | string',
             'email' => 'required | string'
