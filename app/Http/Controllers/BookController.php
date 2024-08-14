@@ -27,6 +27,12 @@ class BookController extends Controller
         $genre = $this->genre->find($genreId);
         $booksQuery = $this->book->query();
 
+        if (isset($request->search)){
+            $booksQuery -> whereAny(['title', 'author', 'blurb'], 'LIKE', "%{$request->search}%");
+
+            return $booksQuery;
+        }
+
         if (isset($request->genre)) {
             if (!$genre) {
                 return response()->json([
