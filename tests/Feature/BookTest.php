@@ -252,6 +252,8 @@ class BookTest extends TestCase
 
     public function test_addBook_success(): void
     {
+        Genre::factory()->create();
+
         $testData = [
             'title' => 'A boooooook',
             'author' => 'An author',
@@ -261,7 +263,7 @@ class BookTest extends TestCase
         $response = $this->postJson('/api/books', $testData);
 
         $response->assertStatus(201)
-        ->assertJson(function (AssertableJson $json){
+        ->assertJson(function (AssertableJson $json) {
             $json->hasAll(['message', 'success']);
         });
 
@@ -278,9 +280,13 @@ class BookTest extends TestCase
 
         $response->assertStatus(422)
         ->assertJson(function(AssertableJson $json) {
-            $json->hasAll(['message', 'success']);
+            $json->hasAll(['message', 'errors']);
         });
 
-        $this->assertDatabaseMissing('books', $testData );
+        $this->assertDatabaseMissing('books', [
+            'title' => 'Book',
+            'author' => 'An author',
+            'genre_id' => 1
+        ]);
     }
 }

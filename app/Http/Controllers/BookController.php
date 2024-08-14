@@ -169,13 +169,7 @@ class BookController extends Controller
         $book->claimed = 0;
         $book->genre_id = $request->genre_id;
 
-        if (!$book->title || $book->author || $book->genre_id)
-        {
-            return->
-        }
-
         if ($book->save())
-
         {
             return response()->json([
                 'message' => 'booked created',
@@ -187,6 +181,5 @@ class BookController extends Controller
             'message' => 'book failured',
             'success' => false
         ], 500);
-
     }
 }
