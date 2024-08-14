@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Genre;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-
     public Book $book;
     public Genre $genre;
 
@@ -17,28 +17,28 @@ class BookController extends Controller
         $this->book = $book;
         $this->genre = $genre;
     }
-    public function getAllBooks(Request $request)
+
+    public function getAllBooks(Request $request): JsonResponse
     {
         $request->validate([
             'search' => 'string',
-            'genre' => 'exists:genres,id'
+            'genre' => 'exists:genres,id',
         ]);
 
         $booksQuery = $this->book->query();
 
         if ($request->search) {
-                $booksQuery = $booksQuery->whereAny(['title', 'author', 'blurb'], 'LIKE', "%{$request->search}%");
-            }
+            $booksQuery = $booksQuery->whereAny(['title', 'author', 'blurb'], 'LIKE', "%{$request->search}%");
+        }
 
         if ($request->genre) {
-            $booksQuery = $booksQuery->where('genre_id', '=', $request->genre);
+            $booksQuery = $booksQuery->where('genre_id', $request->genre);
         }
 
-        if ($request->claimed){
-            $booksQuery = $booksQuery->where('claimed', '=', $request->claimed);
-        }
-        else {
-            $booksQuery = $booksQuery->where('claimed', '=', 0);
+        if ($request->claimed) {
+            $booksQuery = $booksQuery->where('claimed', $request->claimed);
+        } else {
+            $booksQuery = $booksQuery->where('claimed', 0);
         }
 
         $books = $booksQuery->with('genre')->get()->makeHidden([
@@ -46,58 +46,55 @@ class BookController extends Controller
             'name',
             'page_count',
             'claimed',
-            'user_id',
-            'created_at',
-            'updated_at'
+            'user_id'
         ]);
 
         return response()->json([
             'message' => 'Books successfully retrieved',
-            'success'=> true,
-            'data' => $books
+            'success' => true,
+            'data' => $books,
         ]);
 
     }
-    public function getBookById(int $id) {
 
-        $book = $this->book->find($id);
+    public function getBookById(int $id): JsonResponse
+    {
 
-        if (!$book){
+        $book = $this->book->with('genre', 'reviews')->find($id);
+
+        if (! $book) {
             return response()->json([
                 'message' => "Book with ID {$id} not found",
-                'success' => false
+                'success' => false,
             ], 404);
         }
-
-        $book->genre;
-        $book->reviews;
 
         return response()->json([
             'message' => 'book retrieved',
             'success' => true,
-            'data' => $book
+            'data' => $book,
         ]);
     }
 
-    public function claimBook(int $id, Request $request)
+    public function claimBook(int $id, Request $request): JsonResponse
     {
         $request->validate([
-            'name' => 'required | string',
-            'email' => 'required | string'
+            'name' => 'required|string',
+            'email' => 'required|string',
         ]);
 
         $book = $this->book->find($id);
 
-        if(!$book){
+        if (! $book) {
             return response()->json([
                 'message' => "Book {$id} not found",
-                'success' => false
-            ],404);
+                'success' => false,
+            ], 404);
         }
-        if ($book->claimed == 1){
+        if ($book->claimed == 1) {
             return response()->json([
                 'message' => "Book {$id} is already claimed",
-                'success' => false
+                'success' => false,
             ], 400);
         }
 
@@ -105,38 +102,39 @@ class BookController extends Controller
         $book->claimed_by_email = $request->email;
         $book->claimed = 1;
         $book->save();
+
         return response()->json([
             'message' => "Book {$id} was claimed",
-            'success' => true
+            'success' => true,
         ]);
     }
 
-    public function returnBook(int $id, Request $request)
+    public function returnBook(int $id, Request $request): JsonResponse
     {
         $request->validate([
-            'email' => 'required | string'
+            'email' => 'required|string',
         ]);
 
         $book = $this->book->find($id);
 
-        if(!$book){
+        if (! $book) {
             return response()->json([
                 'message' => "Book {$id} not found",
-                'success' => false
-            ],404);
+                'success' => false,
+            ], 404);
         }
 
-        if ($book->claimed == 0){
+        if ($book->claimed == 0) {
             return response()->json([
                 'message' => "Book {$id} is not claimed",
-                'success' => false
+                'success' => false,
             ], 400);
         }
 
-        if ($book->claimed_by_email !== $request->email){
+        if ($book->claimed_by_email !== $request->email) {
             return response()->json([
                 'message' => "Book {$id} was not returned. {$request->email} did not claim this book.",
-                'success' => false
+                'success' => false,
             ], 400);
         }
 
@@ -144,12 +142,14 @@ class BookController extends Controller
         $book->claimed_by_email = null;
         $book->claimed = 0;
         $book->save();
+
         return response()->json([
             'message' => "Book {$id} was returned",
-            'success' => true
+            'success' => true,
         ]);
     }
-    public function addBook(Request $request)
+
+    public function addBook(Request $request): JsonResponse
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -162,7 +162,7 @@ class BookController extends Controller
             'genre_id' => 'required|integer|exists:genres,id',
         ]);
 
-        $book = new book();
+        $book = new book;
         $book->title = $request->title;
         $book->author = $request->author;
         $book->year = $request->year;
@@ -175,13 +175,13 @@ class BookController extends Controller
         if ($book->save()) {
             return response()->json([
                 'message' => 'booked created',
-                'success' => true
+                'success' => true,
             ], 201);
         }
 
         return response()->json([
             'message' => 'book failured',
-            'success' => false
+            'success' => false,
         ], 500);
     }
 }

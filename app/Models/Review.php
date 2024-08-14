@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Review extends Model
 {
     use HasFactory;
+    public $hidden = ['created_at', 'updated_at'];
 
     public function book(): BelongsTo
     {
