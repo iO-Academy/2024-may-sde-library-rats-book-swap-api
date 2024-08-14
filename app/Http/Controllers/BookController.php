@@ -27,10 +27,15 @@ class BookController extends Controller
         $genre = $this->genre->find($genreId);
         $booksQuery = $this->book->query();
 
-        if (isset($request->search)){
-            $booksQuery -> whereAny(['title', 'author', 'blurb'], 'LIKE', "%{$request->search}%");
-
-            return $booksQuery;
+        if (isset($request->search)) {
+            if (is_string($request->search)) {
+                $booksQuery = $booksQuery->whereAny(['title', 'author', 'blurb'], 'LIKE', "%{$request->search}%");
+            } else if (!is_string($request->search)) {
+                return response()->json([
+                    'message' => 'search needs to be a string',
+                    'success' => false
+                ], 400);
+            }
         }
 
         if (isset($request->genre)) {
