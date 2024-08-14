@@ -20,24 +20,21 @@ class BookController extends Controller
     public function getAllBooks(Request $request)
     {
         $request->validate([
-           'genre_id' => 'exists:genres,id'
+            'search' => 'string',
+            'genre' => 'exists:genres,id'
         ]);
 
-        $genreId = $request->genre;
-        $genre = $this->genre->find($genreId);
         $booksQuery = $this->book->query();
 
-        if (isset($request->genre)) {
-            if (!$genre) {
-                return response()->json([
-                    'message' => 'Genre failed successfully',
-                    'success'=> false
-                ], 404);
+        if ($request->search) {
+                $booksQuery = $booksQuery->whereAny(['title', 'author', 'blurb'], 'LIKE', "%{$request->search}%");
             }
+
+        if ($request->genre) {
             $booksQuery = $booksQuery->where('genre_id', '=', $request->genre);
         }
 
-        if (isset($request->claimed)){
+        if ($request->claimed){
             $booksQuery = $booksQuery->where('claimed', '=', $request->claimed);
         }
         else {
