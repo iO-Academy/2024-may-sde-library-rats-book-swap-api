@@ -149,11 +149,11 @@ class BookController extends Controller
     public function addBook(Request $request)
     {
         $request->validate([
-            'title' => 'required|string',
-            'author' => 'required|string',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
             'year' => 'integer',
-            'blurb' => 'string',
-            'image' => 'string',
+            'blurb' => 'string|max:255',
+            'image' => 'string|max:255',
             'page_count' => 'integer',
             'claimed' => 'boolean',
             'genre_id' => 'required|integer|exists:genres,id',
@@ -169,8 +169,7 @@ class BookController extends Controller
         $book->claimed = 0;
         $book->genre_id = $request->genre_id;
 
-        if ($book->save())
-        {
+        if ($book->save()) {
             return response()->json([
                 'message' => 'booked created',
                 'success' => true

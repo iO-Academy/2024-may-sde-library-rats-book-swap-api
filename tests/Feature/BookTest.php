@@ -270,23 +270,86 @@ class BookTest extends TestCase
         $this->assertDatabaseHas('books', $testData );
     }
 
-    public function test_addBook_failure(): void
+    public function test_addBookAllData_success(): void
     {
+        Genre::factory()->create();
+
         $testData = [
-            'title' => 'A boooooook'
+            'title' => 'A boooooook',
+            'author' => 'An author',
+            'genre_id' => 1,
+            'blurb' => 'Blurb',
+            'image' => 'image',
+            'year' => 2024,
+            'page_count' => 223,
+            'claimed' => 0
         ];
 
         $response = $this->postJson('/api/books', $testData);
 
+        $response->assertStatus(201)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
+
+        $this->assertDatabaseHas('books', $testData );
+    }
+
+    public function test_addBook_failure(): void
+    {
+        $testData = [];
+
+        $response = $this->postJson('/api/books', $testData);
+
         $response->assertStatus(422)
-        ->assertJson(function(AssertableJson $json) {
-            $json->hasAll(['message', 'errors']);
-        });
+        ->assertInvalid([
+            'title' => 'The title field is required',
+            'author' => 'The author field is required',
+            'genre_id' => 'The genre id field is required'
+        ]);
 
         $this->assertDatabaseMissing('books', [
             'title' => 'Book',
             'author' => 'An author',
             'genre_id' => 1
+        ]);
+    }
+
+    public function test_addBookAllData_failure(): void
+    {
+        $testData = [
+            'title' => 3,
+            'author' => 2456,
+            'genre_id' => 'History',
+            'blurb' => false,
+            'image' => 2,
+            'year' => 'Twenty Twenty Four',
+            'page_count' => true,
+            'claimed' => 'yes'
+        ];
+
+        $response = $this->postJson('/api/books', $testData);
+
+        $response->assertStatus(422)
+            ->assertInvalid([
+                'title' => 'The title field must be a string',
+                'author' => 'The author field must be a string',
+                'genre_id' => 'The genre id field must be an integer',
+                'blurb' => 'The blurb field must be a string',
+                'image' => 'The image field must be a string',
+                'year' => 'The year field must be an integer',
+                'claimed' => 'The claimed field must be true or false'
+            ]);
+
+        $this->assertDatabaseMissing('books', [
+            'title' => 3,
+            'author' => 2456,
+            'genre_id' => 'History',
+            'blurb' => false,
+            'image' => 2,
+            'year' => 'Twenty Twenty Four',
+            'page_count' => true,
+            'claimed' => 'yes'
         ]);
     }
 }
