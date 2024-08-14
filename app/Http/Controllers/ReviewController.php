@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
+use App\Services\JsonService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
     public Review $review;
+    public JsonService $jsonService;
 
-    public function __construct(Review $review)
+    public function __construct(Review $review, JsonService $jsonService)
     {
         $this->review = $review;
+        $this->jsonService = $jsonService;
     }
 
     public function addReview(Request $request): JsonResponse
@@ -32,15 +35,9 @@ class ReviewController extends Controller
         $review->book_id = $request->book_id;
 
         if ($review->save()) {
-            return response()->json([
-                'message' => 'Review created',
-                'success' => true,
-            ], 201);
+            return $this->jsonService->get('Review created', true, status:201);
         }
 
-        return response()->json([
-            'message' => 'Unexpected error occurred',
-            'success' => false,
-        ], 500);
+        return $this->jsonService->get('Unexpected error occurred', false, status:500);
     }
 }

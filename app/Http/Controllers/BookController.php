@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Services\JsonService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -11,11 +12,12 @@ class BookController extends Controller
 {
     public Book $book;
     public Genre $genre;
-
-    public function __construct(Book $book, Genre $genre)
+    public JsonService $jsonService;
+    public function __construct(Book $book, Genre $genre, JsonService $jsonService)
     {
         $this->book = $book;
         $this->genre = $genre;
+        $this->jsonService = $jsonService;
     }
 
     public function getAllBooks(Request $request): JsonResponse
@@ -49,12 +51,7 @@ class BookController extends Controller
             'user_id'
         ]);
 
-        return response()->json([
-            'message' => 'Books successfully retrieved',
-            'success' => true,
-            'data' => $books,
-        ]);
-
+        return $this->jsonService->get('Books successfully retrieved', true, $books);
     }
 
     public function getBookById(int $id): JsonResponse
@@ -63,17 +60,10 @@ class BookController extends Controller
         $book = $this->book->with('genre', 'reviews')->find($id);
 
         if (! $book) {
-            return response()->json([
-                'message' => "Book with ID {$id} not found",
-                'success' => false,
-            ], 404);
+            return $this->jsonService->get("Book with ID {$id} not found", false, status:404);
         }
 
-        return response()->json([
-            'message' => 'book retrieved',
-            'success' => true,
-            'data' => $book,
-        ]);
+        return $this->jsonService->get('book retrieved', true, $book);
     }
 
     public function claimBook(int $id, Request $request): JsonResponse
@@ -86,16 +76,10 @@ class BookController extends Controller
         $book = $this->book->find($id);
 
         if (! $book) {
-            return response()->json([
-                'message' => "Book {$id} not found",
-                'success' => false,
-            ], 404);
+            return $this->jsonService->get("Book {$id} not found", false, status:404);
         }
         if ($book->claimed == 1) {
-            return response()->json([
-                'message' => "Book {$id} is already claimed",
-                'success' => false,
-            ], 400);
+            return $this->jsonService->get("Book {$id} is already claimed", false, status:400);
         }
 
         $book->claimed_by_name = $request->name;
@@ -103,10 +87,7 @@ class BookController extends Controller
         $book->claimed = 1;
         $book->save();
 
-        return response()->json([
-            'message' => "Book {$id} was claimed",
-            'success' => true,
-        ]);
+        return $this->jsonService->get("Book {$id} was claimed", true);
     }
 
     public function returnBook(int $id, Request $request): JsonResponse
@@ -118,24 +99,15 @@ class BookController extends Controller
         $book = $this->book->find($id);
 
         if (! $book) {
-            return response()->json([
-                'message' => "Book {$id} not found",
-                'success' => false,
-            ], 404);
+            return $this->jsonService->get("Book {$id} not found", false, status:404);
         }
 
         if ($book->claimed == 0) {
-            return response()->json([
-                'message' => "Book {$id} is not claimed",
-                'success' => false,
-            ], 400);
+            return $this->jsonService->get("Book {$id} is not claimed", false, status:400);
         }
 
         if ($book->claimed_by_email !== $request->email) {
-            return response()->json([
-                'message' => "Book {$id} was not returned. {$request->email} did not claim this book.",
-                'success' => false,
-            ], 400);
+            return $this->jsonService->get("Book {$id} was not returned. {$request->email} did not claim this book.", false, status:400);
         }
 
         $book->claimed_by_name = null;
@@ -143,10 +115,7 @@ class BookController extends Controller
         $book->claimed = 0;
         $book->save();
 
-        return response()->json([
-            'message' => "Book {$id} was returned",
-            'success' => true,
-        ]);
+        return $this->jsonService->get("Book {$id} was returned", true);
     }
 
     public function addBook(Request $request): JsonResponse
@@ -173,15 +142,9 @@ class BookController extends Controller
         $book->genre_id = $request->genre_id;
 
         if ($book->save()) {
-            return response()->json([
-                'message' => 'booked created',
-                'success' => true,
-            ], 201);
+            return $this->jsonService->get('booked created', true, status:201);
         }
 
-        return response()->json([
-            'message' => 'book failured',
-            'success' => false,
-        ], 500);
+        return $this->jsonService->get('book failured', false, status:500);
     }
 }
