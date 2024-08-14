@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
-use http\Env\Response;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -21,26 +20,26 @@ class ReviewController extends Controller
             'name' => 'required|string|max:255',
             'rating' => 'required|integer|min:0|max:5',
             'review' => 'required|string|max:255',
-            'book_id' => 'required|exists:books,id'
+            'book_id' => 'required|exists:books,id',
         ]);
 
-        $review = new Review();
+        $review = new Review;
 
         $review->name = $request->name;
         $review->rating = $request->rating;
         $review->review = $request->review;
         $review->book_id = $request->book_id;
 
-        if ($review->save()){
+        if ($review->save()) {
             return response()->json([
                 'message' => 'Review created',
-                'success' => true
+                'success' => true,
             ], 201);
         }
 
         return response()->json([
             'message' => 'Unexpected error occurred',
-            'success' => false
+            'success' => false,
         ], 500);
     }
 }

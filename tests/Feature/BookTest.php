@@ -21,10 +21,12 @@ class BookTest extends TestCase
 
         $response = $this->getJson('api/books');
 
-        $response->assertStatus(200)
+        // assertOK() which auto does 200
+        $response->assertStatus()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll(['message', 'success', 'data'])
                     ->has('data', 1, function (AssertableJson $json) {
+                        // Look at whereAllType to assert json datatypes
                         $json->hasAll([
                             'id',
                             'title',
@@ -42,7 +44,7 @@ class BookTest extends TestCase
 
     public function test_getBookById_success(): void
     {
-
+        // Never a blank line at the start of a method
         Book::factory()->create();
 
         $response = $this->get('/api/books/1');

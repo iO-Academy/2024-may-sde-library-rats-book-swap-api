@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Genre;
-use Illuminate\Http\Request;
 
 class GenreController extends Controller
 {
@@ -13,13 +12,16 @@ class GenreController extends Controller
     {
         $this->genre = $genre;
     }
+
+    // return type json
     public function getAllGenres()
     {
         $genres = $this->genre->get();
+
         return response()->json([
             'message' => 'Genres retrieved',
             'success' => true,
-            'data' => $genres
+            'data' => $genres,
         ]);
     }
 }
