@@ -177,6 +177,6 @@ class BookController extends Controller
         $bestGenre = $this->genre->where('id', $genreIdMax)->get();
         $worstGenre = $this->genre->where('id', $genreIdMin)->get();
 
-        return view('popularbooks', ['popularBooks' => $popularBooks, 'leastPopular' => $leastPopular, 'bestGenre' => $bestGenre, 'worstGenre' => $worstGenre]);
+        return view('popularbooks', ['popularBooks' => $popularBooks, 'leastPopular' => $leastPopular, 'bestGenre' => $bestGenre, 'worstGenre' => $worstGenre, 'bestGenreCount' => $genreClaimedCountMax, 'worstGenreCount' => $genreClaimedCountMin]);
     }
 }
