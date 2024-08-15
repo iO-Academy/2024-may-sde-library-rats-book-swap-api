@@ -65,7 +65,6 @@ class BookController extends Controller
         if (! $book) {
             return $this->jsonService->get("Book with ID {$id} not found", false, status: 404);
         }
-        App::abort(500);
 
         return $this->jsonService->get('book retrieved', true, $book);
     }
