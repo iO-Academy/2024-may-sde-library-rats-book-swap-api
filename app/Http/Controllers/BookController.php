@@ -156,25 +156,27 @@ class BookController extends Controller
     {
         $popularBooks = $this->book->orderBy('claimed_count', 'DESC')->limit(3)->get();
         $leastPopular = $this->book->orderBy('claimed_count')->limit(3)->get();
-        $genre1 = $this->book->where('genre_id', 1)->sum('claimed_count');
-        $genre2 = $this->book->where('genre_id', 2)->sum('claimed_count');
-        $genre3 = $this->book->where('genre_id', 3)->sum('claimed_count');
-        $genre4 = $this->book->where('genre_id', 4)->sum('claimed_count');
 
-        $worstGenre = $genre1;
+        $genres = $this->genre->all();
+        $genreClaimedCountMax = 0;
+        $genreIdMax = 0;
+        $genreClaimedCountMin = $this->book->where('genre_id', 1)->sum('claimed_count');
+        $genreIdMin = 0;
 
-        if ($genre2->claimed_count < $worstGenre->claimed_count) {
-            $worstGenre = $genre2;
+        foreach ($genres as $genre) {
+            if ($this->book->where('genre_id', $genre->id)->sum('claimed_count') > $genreClaimedCountMax) {
+                $genreClaimedCountMax = $this->book->where('genre_id', $genre->id)->sum('claimed_count');
+                $genreIdMax = $genre->id;
+            }
+            if ($this->book->where('genre_id', $genre->id)->sum('claimed_count') <= $genreClaimedCountMin) {
+                $genreClaimedCountMin = $this->book->where('genre_id', $genre->id)->sum('claimed_count');
+                $genreIdMin = $genre->id;
+            }
         }
 
-        if ($genre3->claimed_count < $worstGenre->claimed_count) {
-            $worstGenre = $genre3;
-        }
+        $bestGenre = $this->genre->where('id', $genreIdMax)->get();
+        $worstGenre = $this->genre->where('id', $genreIdMin)->get();
 
-        if ($genre4->claimed_count < $worstGenre->claimed_count) {
-            $worstGenre = $genre4;
-        }
-
-        return view('popularbooks', ['popularBooks' => $popularBooks, 'leastPopular' => $leastPopular, 'worstGenre' => $worstGenre]);
+        return view('popularbooks', ['popularBooks' => $popularBooks, 'leastPopular' => $leastPopular, 'bestGenre' => $bestGenre, 'worstGenre' => $worstGenre]);
     }
 }
