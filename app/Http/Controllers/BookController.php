@@ -7,6 +7,7 @@ use App\Models\Genre;
 use App\Services\JsonService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class BookController extends Controller
 {
@@ -59,12 +60,12 @@ class BookController extends Controller
 
     public function getBookById(int $id): JsonResponse
     {
-
         $book = $this->book->with('genre', 'reviews')->find($id);
 
         if (! $book) {
             return $this->jsonService->get("Book with ID {$id} not found", false, status: 404);
         }
+        App::abort(500);
 
         return $this->jsonService->get('book retrieved', true, $book);
     }
