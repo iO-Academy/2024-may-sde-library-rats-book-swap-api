@@ -9,14 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LogStuff
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
         $data = ['path' => $request->getPathInfo(), 'method' => $request->getMethod()];
         $message = str_replace('/', '_', trim($request->getPathInfo(), '/'));
         Log::info($message, $data);
