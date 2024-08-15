@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogStuff
@@ -17,6 +18,8 @@ class LogStuff
     {
         $response = $next($request);
         $data = ['path' => $request->getPathInfo(), 'method' => $request->getMethod()];
+        $message = str_replace('/', '_', trim($request->getPathInfo(), '/'));
+        Log::info($message, $data);
         return $next($request);
     }
 }
