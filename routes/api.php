@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -7,10 +8,12 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/books', [\App\Http\Controllers\BookController::class, 'getAllBooks']);
-Route::get('/books/{id}', [\App\Http\Controllers\BookController::class, 'getBookById']);
-Route::put('/books/claim/{id}', [\App\Http\Controllers\BookController::class, 'claimBook']);
-Route::put('/books/return/{id}', [\App\Http\Controllers\BookController::class, 'returnBook']);
+Route::controller(BookController::class)->group(function () {
+    Route::get('/books', 'getAllBooks');
+    Route::get('/books/{id}', 'getBookById');
+    Route::put('books/claim/{id}', 'claimBook');
+    Route::put('/books/return/{id}', 'returnBook');
+    Route::post('/books', 'addBook');
+});
 Route::get('/genres', [\App\Http\Controllers\GenreController::class, 'getAllGenres']);
-Route::post('/books', [\App\Http\Controllers\BookController::class,'addBook']);
 Route::post('/reviews', [\App\Http\Controllers\ReviewController::class, 'addReview']);

@@ -21,20 +21,20 @@ class BookTest extends TestCase
 
         $response = $this->getJson('api/books');
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll(['message', 'success', 'data'])
                     ->has('data', 1, function (AssertableJson $json) {
-                        $json->hasAll([
-                            'id',
-                            'title',
-                            'author',
-                            'image',
-                            'year',
-                            'claimed_by_name',
-                            'genre_id',
-                            'claimed_by_email',
-                            'genre'
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'title' => 'string',
+                            'author' => 'string',
+                            'image' => 'string',
+                            'year' => 'integer',
+                            'claimed_by_name' => 'string',
+                            'genre_id' => 'integer',
+                            'claimed_by_email' => 'string',
+                            'genre' => 'array'
                         ]);
                     });
             });
@@ -42,32 +42,29 @@ class BookTest extends TestCase
 
     public function test_getBookById_success(): void
     {
-
         Book::factory()->create();
 
         $response = $this->get('/api/books/1');
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll(['message', 'success', 'data'])
                     ->has('data', function (AssertableJson $json) {
-                        $json->hasAll([
-                            'id',
-                            'title',
-                            'author',
-                            'image',
-                            'year',
-                            'blurb',
-                            'page_count',
-                            'claimed',
-                            'claimed_by_name',
-                            'genre_id',
-                            'user_id',
-                            'claimed_by_email',
-                            'genre',
-                            'reviews',
-                            'created_at',
-                            'updated_at'
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'title' => 'string',
+                            'author' => 'string',
+                            'image' => 'string',
+                            'year' => 'integer',
+                            'blurb' => 'string',
+                            'page_count' => 'integer',
+                            'claimed' => 'integer',
+                            'claimed_by_name' => 'string',
+                            'genre_id' => 'integer',
+                            'user_id' => 'null',
+                            'claimed_by_email' => 'string',
+                            'genre' => 'array',
+                            'reviews' => 'array'
                         ]);
                     });
             });
@@ -95,7 +92,7 @@ class BookTest extends TestCase
 
         $response = $this->putJson('/api/books/return/1', $testData);
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll('message', 'success');
             });
@@ -168,7 +165,7 @@ class BookTest extends TestCase
 
         $response = $this->putJson('/api/books/claim/1', $testData);
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll('message', 'success');
             });
@@ -228,20 +225,20 @@ class BookTest extends TestCase
 
         $response = $this->getJson('api/books?genre=1');
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll(['message', 'success', 'data'])
                     ->has('data', 1, function (AssertableJson $json) {
-                        $json->hasAll([
-                            'id',
-                            'title',
-                            'author',
-                            'image',
-                            'year',
-                            'claimed_by_name',
-                            'genre_id',
-                            'claimed_by_email',
-                            'genre'
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'title' => 'string',
+                            'author' => 'string',
+                            'image' => 'string',
+                            'year' => 'integer',
+                            'claimed_by_name' => 'string',
+                            'genre_id' => 'integer',
+                            'claimed_by_email' => 'string',
+                            'genre' => 'array'
                         ])
                             ->where(
                                 'genre_id', 1
@@ -360,24 +357,23 @@ class BookTest extends TestCase
 
         $response = $this->getJson('api/books?claimed=1');
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll(['message', 'success', 'data'])
                     ->has('data', 1, function (AssertableJson $json) {
-                        $json->hasAll([
-                            'id',
-                            'title',
-                            'author',
-                            'image',
-                            'year',
-                            'claimed_by_name',
-                            'genre_id',
-                            'claimed_by_email',
-                            'genre'
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'title' => 'string',
+                            'author' => 'string',
+                            'image' => 'string',
+                            'year' => 'integer',
+                            'claimed_by_name' => 'string',
+                            'genre_id' => 'integer',
+                            'claimed_by_email' => 'string',
+                            'genre' => 'array'
                         ]);
                     });
             });
-
     }
 
     public function test_getBookSearch_success(): void
@@ -389,20 +385,20 @@ class BookTest extends TestCase
 
         $response = $this->getJson('api/books?search=test');
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll(['message', 'success', 'data'])
                     ->has('data', 3, function (AssertableJson $json) {
-                        $json->hasAll([
-                            'id',
-                            'title',
-                            'author',
-                            'image',
-                            'year',
-                            'claimed_by_name',
-                            'genre_id',
-                            'claimed_by_email',
-                            'genre'
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'title' => 'string',
+                            'author' => 'string',
+                            'image' => 'string',
+                            'year' => 'integer',
+                            'claimed_by_name' => 'string',
+                            'genre_id' => 'integer',
+                            'claimed_by_email' => 'string',
+                            'genre' => 'array'
                         ]);
                     });
             });
@@ -414,7 +410,7 @@ class BookTest extends TestCase
 
         $response = $this->getJson('api/books?search=test');
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->hasAll(['message', 'success', 'data'])
                     ->has('data', 0);
