@@ -88,6 +88,7 @@ class BookController extends Controller
         $book->claimed_by_name = $request->name;
         $book->claimed_by_email = $request->email;
         $book->claimed = 1;
+        $book->claimed_count = $book->claimed_count + 1;
         $book->save();
 
         return $this->jsonService->get("Book {$id} was claimed", true);

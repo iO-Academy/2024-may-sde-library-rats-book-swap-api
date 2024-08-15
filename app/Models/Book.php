@@ -11,7 +11,7 @@ class Book extends Model
 {
     use HasFactory;
 
-    public $hidden = ['created_at', 'updated_at'];
+    public $hidden = ['created_at', 'updated_at', 'claimed_count'];
 
     public function genre(): BelongsTo
     {
