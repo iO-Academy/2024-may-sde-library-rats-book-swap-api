@@ -164,7 +164,7 @@ class BookController extends Controller
         $genreIdMin = 0;
 
         foreach ($genres as $genre) {
-            if ($this->book->where('genre_id', $genre->id)->sum('claimed_count') > $genreClaimedCountMax) {
+            if ($this->book->where('genre_id', $genre->id)->sum('claimed_count') >= $genreClaimedCountMax) {
                 $genreClaimedCountMax = $this->book->where('genre_id', $genre->id)->sum('claimed_count');
                 $genreIdMax = $genre->id;
             }
@@ -177,6 +177,6 @@ class BookController extends Controller
         $bestGenre = $this->genre->where('id', $genreIdMax)->get();
         $worstGenre = $this->genre->where('id', $genreIdMin)->get();
 
-        return view('popularbooks', ['popularBooks' => $popularBooks, 'leastPopular' => $leastPopular, 'bestGenre' => $bestGenre, 'worstGenre' => $worstGenre, 'bestGenreCount' => $genreClaimedCountMax, 'worstGenreCount' => $genreClaimedCountMin]);
+        return view('dashboard', ['popularBooks' => $popularBooks, 'leastPopular' => $leastPopular, 'bestGenre' => $bestGenre, 'worstGenre' => $worstGenre, 'bestGenreCount' => $genreClaimedCountMax, 'worstGenreCount' => $genreClaimedCountMin]);
     }
 }
