@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 class JsonService
 {
     public function get(string $message, bool $success, $data = null, int $status = 200)

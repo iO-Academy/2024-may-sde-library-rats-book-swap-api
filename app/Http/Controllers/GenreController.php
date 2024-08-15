@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 class GenreController extends Controller
 {
     public Genre $genre;
+
     public JsonService $jsonService;
 
     public function __construct(Genre $genre, JsonService $jsonService)

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class ReviewController extends Controller
 {
     public Review $review;
+
     public JsonService $jsonService;
 
     public function __construct(Review $review, JsonService $jsonService)
@@ -35,9 +36,9 @@ class ReviewController extends Controller
         $review->book_id = $request->book_id;
 
         if ($review->save()) {
-            return $this->jsonService->get('Review created', true, status:201);
+            return $this->jsonService->get('Review created', true, status: 201);
         }
 
-        return $this->jsonService->get('Unexpected error occurred', false, status:500);
+        return $this->jsonService->get('Unexpected error occurred', false, status: 500);
     }
 }

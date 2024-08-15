@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Book extends Model
 {
     use HasFactory;
+
     public $hidden = ['created_at', 'updated_at'];
 
     public function genre(): BelongsTo
