@@ -151,4 +151,30 @@ class BookController extends Controller
 
         return $this->jsonService->get('book failured', false, status: 500);
     }
+
+    public function getBookReport()
+    {
+        $popularBooks = $this->book->orderBy('claimed_count', 'DESC')->limit(3)->get();
+        $leastPopular = $this->book->orderBy('claimed_count')->limit(3)->get();
+        $genre1 = $this->book->where('genre_id', 1)->sum('claimed_count');
+        $genre2 = $this->book->where('genre_id', 2)->sum('claimed_count');
+        $genre3 = $this->book->where('genre_id', 3)->sum('claimed_count');
+        $genre4 = $this->book->where('genre_id', 4)->sum('claimed_count');
+
+        $worstGenre = $genre1;
+
+        if ($genre2->claimed_count < $worstGenre->claimed_count) {
+            $worstGenre = $genre2;
+        }
+
+        if ($genre3->claimed_count < $worstGenre->claimed_count) {
+            $worstGenre = $genre3;
+        }
+
+        if ($genre4->claimed_count < $worstGenre->claimed_count) {
+            $worstGenre = $genre4;
+        }
+
+        return view('popularbooks', ['popularBooks' => $popularBooks, 'leastPopular' => $leastPopular, 'worstGenre' => $worstGenre]);
+    }
 }
